@@ -22,7 +22,7 @@ class CategoryController extends AbstractController
 
 	    return $this->json([
 		    'data' => $categories
-	    ]);
+	    ], 200,[], ['groups' => ['all']]);
     }
 
 	/**
@@ -34,7 +34,7 @@ class CategoryController extends AbstractController
 
 		return $this->json([
 			'data' => $category
-		]);
+		], 200,[], ['groups' => ['all', 'show_category']]);
 	}
 
 	/**

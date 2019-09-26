@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class ProductController extends AbstractController
 
         return $this->json([
             'data' => $products
-        ]);
+        ], 200, [], ['groups' => ['all']]);
     }
 
 	/**
@@ -34,7 +35,7 @@ class ProductController extends AbstractController
 
 		return $this->json([
 			'data' => $product
-		]);
+		], 200, [], ['groups' => ['show']]);
 	}
 
 	/**

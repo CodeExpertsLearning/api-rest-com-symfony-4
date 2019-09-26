@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -16,31 +17,37 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"all", "show_category", "show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"all", "show_category","show"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"all", "show_category", "show"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="text")
+     * @Serializer\Groups({"show"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"all", "show"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"all", "show"})
      */
     private $slug;
 
@@ -61,6 +68,7 @@ class Product
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="products")
+     * @Serializer\Groups({"show"})
      */
     private $categories;
 
