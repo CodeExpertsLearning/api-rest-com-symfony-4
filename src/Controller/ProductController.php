@@ -16,9 +16,15 @@ class ProductController extends AbstractController
     /**
      * @Route("/", name="index", methods={"GET"})
      */
-    public function index()
+    public function index(Request $request)
     {
-    	$products = $this->getDoctrine()->getRepository(Product::class)->findAll();
+    	$productRepository  = $this->getDoctrine()->getRepository(Product::class);
+
+    	$fields = $request->query->get('fields', null);
+	    $limit = $request->query->get('limit', null);
+		$filters = $request->query->get('filters', null);
+
+		$products = $productRepository->getProductsByFilters($filters, $fields, $limit);
 
         return $this->json([
             'data' => $products

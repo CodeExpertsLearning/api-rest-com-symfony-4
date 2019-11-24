@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\FilterTransform;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -36,15 +37,28 @@ class ProductRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Product
+    public function getProductsByFilters($filters = null, $fields = null, $limit = null)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
+        $result =  $this->createQueryBuilder('p');
+
+        if(!is_null($filters)) {
+	        foreach(FilterTransform::transformFilters($filters) as $filter) {
+
+		        $result->andWhere('p.' . $filter[0] . ' ' . $filter[1] . ' :' . $filter[0])
+		               ->setParameter($filter[0], $filter[2]);
+	        }
+        }
+
+        if(!is_null($fields)) {
+            $result->select(FilterTransform::transformFields($fields, 'p.'));
+        }
+
+	    if(!is_null($limit)) {
+		    $result->setMaxResults($limit);
+	    }
+
+	    return $result->getQuery()
+            ->getResult()
         ;
     }
-    */
 }
