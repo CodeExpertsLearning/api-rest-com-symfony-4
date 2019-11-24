@@ -7,6 +7,7 @@ use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/users", name="users_")
@@ -22,7 +23,7 @@ class UserController extends AbstractController
 
 		return $this->json([
 			'data' => $users
-		]);
+		], 200, [], ['groups' => 'list']);
 	}
 
 	/**
@@ -34,13 +35,13 @@ class UserController extends AbstractController
 
 		return $this->json([
 			'data' => $user
-		]);
+		], 200, [], ['groups' => 'single']);
 	}
 
 	/**
 	 * @Route("/", name="create", methods={"POST"})
 	 */
-	public function create(Request $request)
+	public function create(Request $request, UserPasswordEncoderInterface $passwordEncoder)
 	{
 		$userData = $request->request->all();
 
@@ -48,6 +49,10 @@ class UserController extends AbstractController
 
 		$form = $this->createForm(UserType::class, $user);
 		$form->submit($userData);
+
+		$password = $passwordEncoder->encodePassword($user, $userData['password']);
+		$user->setPassword($password);
+		$user->setRoles('ROLE_USER');
 
 		$user->setIsActive(true);
 		$user->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
@@ -65,8 +70,10 @@ class UserController extends AbstractController
 	/**
 	 * @Route("/{userId}", name="update", methods={"PUT", "PATCH"})
 	 */
-	public function update(Request $request, $userId)
+	public function update(Request $request, $userId, UserPasswordEncoderInterface $passwordEncoder)
 	{
+		$rolesLoggedUser = $this->getUser()->getRoles();
+
 		$userData = $request->request->all();
 
 		$doctrine = $this->getDoctrine();
@@ -75,6 +82,15 @@ class UserController extends AbstractController
 
 		$form = $this->createForm(UserType::class, $user);
 		$form->submit($userData);
+
+		if($request->request->has('role') && in_array('ROLE_ADMIN', $rolesLoggedUser)){
+			$user->setRoles($request->request->get('role'));
+		}
+
+		if($request->request->has('password')) {
+			$password = $passwordEncoder->encodePassword($user, $userData['password']);
+			$user->setPassword($password);
+		}
 
 		$user->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 

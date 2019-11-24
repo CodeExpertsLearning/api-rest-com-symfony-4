@@ -3,32 +3,38 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Groups({"list", "single"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"list", "single"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"list", "single"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Groups({"list", "single"})
      */
     private $email;
 
@@ -51,6 +57,12 @@ class User
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+	/**
+	 * @ORM\Column(type="string")
+	 * @Serializer\Groups({"list", "single"})
+	 */
+	private $roles;
 
     public function getId(): ?int
     {
@@ -140,4 +152,34 @@ class User
 
         return $this;
     }
+
+	public function getRoles()
+	{
+         $roles = [];
+         $roles[] = $this->roles;
+
+         return $roles;
+    }
+
+    public function setRoles(string $role): self
+    {
+    	$this->roles = $role;
+
+    	return $this;
+    }
+
+	public function getSalt()
+             {
+                 return null;
+             }
+
+	public function getUsername()
+             {
+                 return $this->email;
+             }
+
+	public function eraseCredentials()
+             {
+             }
+
 }
