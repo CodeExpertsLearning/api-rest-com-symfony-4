@@ -7,6 +7,7 @@ use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Api\Service\PaginatorFactory;
 
 /**
  * @Route("/products", name="products_")
@@ -16,7 +17,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/", name="index", methods={"GET"})
      */
-    public function index(Request $request)
+    public function index(Request $request, PaginatorFactory $paginator)
     {
     	$productRepository  = $this->getDoctrine()->getRepository(Product::class);
 
@@ -26,9 +27,9 @@ class ProductController extends AbstractController
 
 		$products = $productRepository->getProductsByFilters($filters, $fields, $limit);
 
-        return $this->json([
-            'data' => $products
-        ], 200, [], ['groups' => ['all']]);
+		$products = $paginator->paginate($products, $request, 'products_index');
+
+        return $this->json($products, 200, [], ['groups' => ['all']]);
     }
 
 	/**

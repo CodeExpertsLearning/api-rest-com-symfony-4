@@ -57,8 +57,6 @@ class ProductRepository extends ServiceEntityRepository
 		    $result->setMaxResults($limit);
 	    }
 
-	    return $result->getQuery()
-            ->getResult()
-        ;
+	    return $result;
     }
 }
