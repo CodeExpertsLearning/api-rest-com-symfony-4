@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -24,30 +25,39 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"all", "show_category","show"})
+     *
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"all", "show_category", "show"})
+     *
+     * @Assert\NotBlank()
      */
     private $description;
 
     /**
      * @ORM\Column(type="text")
      * @Serializer\Groups({"show"})
+     *
+     * @Assert\NotBlank()
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer")
      * @Serializer\Groups({"all", "show"})
+     *
+     * @Assert\NotBlank()
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"all", "show"})
+     *
      */
     private $slug;
 

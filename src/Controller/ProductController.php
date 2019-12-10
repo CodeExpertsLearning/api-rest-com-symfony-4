@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Api\FormErrorValidtation;
+use App\Api\Message\ApiError;
 use App\Entity\Product;
 use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Api\Service\PaginatorFactory;
@@ -47,7 +50,7 @@ class ProductController extends AbstractController
 	/**
 	 * @Route("/", name="create", methods={"POST"})
 	 */
-    public function create(Request $request)
+    public function create(Request $request, FormErrorValidtation $errorValidation)
     {
     	$productData = $request->request->all();
 
@@ -60,6 +63,15 @@ class ProductController extends AbstractController
 
 	    $form = $this->createForm(ProductType::class, $product);
 	    $form->submit($productData);
+
+	    if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+	    }
 
 		$product->setIsActive(true);
 		$product->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
@@ -78,7 +90,7 @@ class ProductController extends AbstractController
 	/**
 	 * @Route("/{productId}", name="update", methods={"PUT", "PATCH"})
 	 */
-	public function update(Request $request, $productId)
+	public function update(Request $request, $productId, FormErrorValidtation $errorValidation)
 	{
 		$productData = $request->request->all();
 
@@ -94,6 +106,15 @@ class ProductController extends AbstractController
 
 		$form = $this->createForm(ProductType::class, $product);
 		$form->submit($productData);
+
+		if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+		}
 
 		$product->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 

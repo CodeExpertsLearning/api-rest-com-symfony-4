@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Api\Message\ApiError;
+use App\Api\FormErrorValidtation;
 
 /**
  * @Route("/users", name="users_")
@@ -41,7 +43,7 @@ class UserController extends AbstractController
 	/**
 	 * @Route("/", name="create", methods={"POST"})
 	 */
-	public function create(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+	public function create(Request $request, UserPasswordEncoderInterface $passwordEncoder, FormErrorValidtation $errorValidation)
 	{
 		$userData = $request->request->all();
 
@@ -49,6 +51,15 @@ class UserController extends AbstractController
 
 		$form = $this->createForm(UserType::class, $user);
 		$form->submit($userData);
+
+		if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+		}
 
 		$password = $passwordEncoder->encodePassword($user, $userData['password']);
 		$user->setPassword($password);
@@ -70,7 +81,7 @@ class UserController extends AbstractController
 	/**
 	 * @Route("/{userId}", name="update", methods={"PUT", "PATCH"})
 	 */
-	public function update(Request $request, $userId, UserPasswordEncoderInterface $passwordEncoder)
+	public function update(Request $request, $userId, UserPasswordEncoderInterface $passwordEncoder, FormErrorValidtation $errorValidation)
 	{
 		$rolesLoggedUser = $this->getUser()->getRoles();
 
@@ -82,6 +93,15 @@ class UserController extends AbstractController
 
 		$form = $this->createForm(UserType::class, $user);
 		$form->submit($userData);
+
+		if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+		}
 
 		if($request->request->has('role') && in_array('ROLE_ADMIN', $rolesLoggedUser)){
 			$user->setRoles($request->request->get('role'));

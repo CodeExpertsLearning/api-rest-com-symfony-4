@@ -7,6 +7,8 @@ use App\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Api\Message\ApiError;
+use App\Api\FormErrorValidtation;
 
 /**
  * @Route("/categories", name="categories_")
@@ -40,7 +42,7 @@ class CategoryController extends AbstractController
 	/**
 	 * @Route("/", name="create", methods={"POST"})
 	 */
-	public function create(Request $request)
+	public function create(Request $request, FormErrorValidtation $errorValidation)
 	{
 		$categoryData = $request->request->all();
 
@@ -48,6 +50,15 @@ class CategoryController extends AbstractController
 
 		$form = $this->createForm(CategoryType::class, $category);
 		$form->submit($categoryData);
+
+		if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+		}
 
 		$category->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 		$category->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
@@ -64,7 +75,7 @@ class CategoryController extends AbstractController
 	/**
 	 * @Route("/{categoryId}", name="update", methods={"PUT", "PATCH"})
 	 */
-	public function update(Request $request, $categoryId)
+	public function update(Request $request, $categoryId, FormErrorValidtation $errorValidation)
 	{
 		$categoryData = $request->request->all();
 
@@ -74,6 +85,15 @@ class CategoryController extends AbstractController
 
 		$form = $this->createForm(CategoryType::class, $category);
 		$form->submit($categoryData);
+
+		if(!$form->isValid()) {
+			$errors = new ApiError(
+				'form_validation',
+				'Validação dos campos do Formulário',
+				$errorValidation->getErrors($form));
+
+			return $this->json($errors, 400);
+		}
 
 		$category->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 
