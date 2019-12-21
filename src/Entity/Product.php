@@ -82,9 +82,15 @@ class Product
      */
     private $categories;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="ProductPhoto", mappedBy="product")
+	 */
+	private $photos;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -212,5 +218,10 @@ class Product
         }
 
         return $this;
+    }
+
+    public function getPhotos()
+    {
+    	return $this->photos;
     }
 }
