@@ -11,14 +11,17 @@ class CreditCard extends PagSeguro
 		$creditCard->setReference($reference);
 		$creditCard->setCurrency("BRL");
 
-		$creditCard->addItems()->withParameters(
-			'0001',
-			'Notebook prata',
-			2,
-			10.00
-		);
+		foreach($data['products'] as $item) {
 
-		$email = \ConfigWrapper::ENV == 'sandbox' ? 'test@sandbox.pagseguro.uol.com.br' : $user->getEmail();
+			$creditCard->addItems()->withParameters(
+				$reference,
+				$item['name'],
+				$item['amount'],
+				$item['price']
+			);
+		}
+
+		$email = \ConfigWrapper::ENV == 'sandbox' ? 'test@sandbox.pagseguro.com.br' : $user->getEmail();
 		$name  = $user->getFirstName() . ' ' . $user->getLastName();
 
 		$creditCard->setSender()->setName($name);

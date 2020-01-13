@@ -72,6 +72,11 @@ class User implements UserInterface
 	 */
 	private $roles;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="UserOrder", mappedBy="user")
+	 */
+	private $orderCollection;
+
     public function getId(): ?int
     {
         return $this->id;
