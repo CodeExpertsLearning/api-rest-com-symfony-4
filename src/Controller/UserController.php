@@ -66,8 +66,6 @@ class UserController extends AbstractController
 		$user->setRoles('ROLE_USER');
 
 		$user->setIsActive(true);
-		$user->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-		$user->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 
 		$doctrine = $this->getDoctrine()->getManager();
 		$doctrine->persist($user);
@@ -111,8 +109,6 @@ class UserController extends AbstractController
 			$password = $passwordEncoder->encodePassword($user, $userData['password']);
 			$user->setPassword($password);
 		}
-
-		$user->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 
 		$manager = $doctrine->getManager();
 		$manager->flush();

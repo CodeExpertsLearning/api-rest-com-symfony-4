@@ -46,9 +46,6 @@ class CheckoutController extends AbstractController
 			$userOrder->setItems(serialize($data['products']));
 			$userOrder->setPagseguroCode($proccess->getCode());
 			$userOrder->setPagseguroStatus($proccess->getStatus());
-			$userOrder->setCreatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
-			$userOrder->setUpdatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
-
 			$userOrder->setUser($user);
 
 			$doctrine = $this->getDoctrine();

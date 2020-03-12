@@ -40,9 +40,6 @@ class ProductPhotoController extends AbstractController
 		    foreach($photos as $photo) {
 			    $productPhoto = new ProductPhoto();
 			    $productPhoto->setImage($photo);
-			    $productPhoto->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-			    $productPhoto->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-
 			    $productPhoto->setProduct($product);
 
 			    $doctrine->getManager()->persist($productPhoto);

@@ -9,6 +9,7 @@ use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use App\Api\Service\PaginatorFactory;
 
@@ -19,6 +20,7 @@ class ProductController extends AbstractController
 {
     /**
      * @Route("/", name="index", methods={"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_ANONYMOUSLY')")
      */
     public function index(Request $request, PaginatorFactory $paginator)
     {
@@ -74,9 +76,6 @@ class ProductController extends AbstractController
 	    }
 
 		$product->setIsActive(true);
-		$product->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-		$product->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-
 		$doctrine = $this->getDoctrine()->getManager();
 
 		$doctrine->persist($product);
@@ -115,8 +114,6 @@ class ProductController extends AbstractController
 
 			return $this->json($errors, 400);
 		}
-
-		$product->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 
 		$manager = $doctrine->getManager();
 

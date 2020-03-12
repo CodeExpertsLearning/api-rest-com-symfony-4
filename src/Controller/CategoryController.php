@@ -60,9 +60,6 @@ class CategoryController extends AbstractController
 			return $this->json($errors, 400);
 		}
 
-		$category->setCreatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-		$category->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
-
 		$doctrine = $this->getDoctrine()->getManager();
 		$doctrine->persist($category);
 		$doctrine->flush();
@@ -94,8 +91,6 @@ class CategoryController extends AbstractController
 
 			return $this->json($errors, 400);
 		}
-
-		$category->setUpdatedAt(new \DateTime("now", new \DateTimeZone('America/Sao_Paulo')));
 
 		$manager = $doctrine->getManager();
 		$manager->flush();

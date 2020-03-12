@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -58,6 +59,7 @@ class Product
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"all", "show"})
      *
+     * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
 
@@ -68,11 +70,15 @@ class Product
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     * @Serializer\Groups({"all", "show"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable()
+     * @Serializer\Groups({"all", "show"})
      */
     private $updatedAt;
 
