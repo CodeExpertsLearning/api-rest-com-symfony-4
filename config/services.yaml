@@ -30,3 +30,7 @@ services:
     App\Api\Upload:
         arguments:
             $directory: '%upload_dir%'
+
+    App\Listener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
